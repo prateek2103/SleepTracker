@@ -11,4 +11,6 @@ router.post("/signup", signupValidations, userController.postSignup);
 // POST /user/login
 router.post("/login", loginValidations, userController.postLogin);
 
+// GET /user/verifyEmail
+router.get("/verifyAccount/:verifyId", userController.getVerifyEmail);
 module.exports = router;

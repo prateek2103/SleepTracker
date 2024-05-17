@@ -1,10 +1,11 @@
 const { response } = require("express");
 const UserModel = require("../models/UserModel");
 const { validationResult } = require("express-validator");
-
+const jwtUtil = require("../util/jwtUtil");
+const { sendMail } = require("../util/commonUtil");
 /**
  * method to store user information on signup
- * @param {} req
+ * @param {*} req
  * @param {*} res
  * @param {*} next
  */
@@ -26,10 +27,14 @@ exports.postSignup = (req, res, next) => {
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
     password: req.body.password,
+    verified: false,
   });
 
   userData
     .save()
+    .then(() => {
+      return sendMail(userData);
+    })
     .then(() => {
       return res.status(201).send("user added successfully");
     })
@@ -48,26 +53,66 @@ exports.postSignup = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   // check if user exists
+  let foundUser;
 
   UserModel.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        c;
         return res.status(403).send("Username or password is incorrect");
       }
 
-      console.log(user);
+      foundUser = user;
       return user.comparePassword(req.body.password);
     })
     .then((result) => {
       console.log(result);
       if (result) {
-        res.status(200).send("login successful");
+        if (!foundUser.verified) {
+          return res
+            .status(403)
+            .send(
+              "A mail has been sent to your respective email id. Please verify"
+            );
+        }
+        return jwtUtil.generateToken({
+          userId: foundUser._id.toString(),
+          name: foundUser.firstName,
+        });
       } else {
         res.status(403).send("Username or password is incorrect");
       }
     })
+    .then((token) => {
+      console.log(token);
+      res.status(200).json({ token: token });
+    })
     .catch((err) => {
-      throw new Error("server error please try again later.");
+      console.log(err);
+    });
+};
+
+exports.getVerifyEmail = (req, res, next) => {
+  const verifyRequestId = req.params.verifyId;
+  console.log(req.params);
+  if (!verifyRequestId) {
+    return res.status(400).send("invalid verify email link");
+  }
+
+  const { userId } = jwtUtil.verifyToken(verifyRequestId);
+
+  UserModel.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw Error("invalid verify link");
+      }
+      user.verified = true;
+      return user.save();
+    })
+    .then(() => {
+      res.status(200).send("email verified successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(400).send("invalid verify email link");
     });
 };

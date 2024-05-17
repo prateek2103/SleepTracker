@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 const {
   countryValidator,
   phoneNumberValidator,
-} = require("../util/sleepTrackerUtil");
+} = require("../util/commonUtil");
 const { getCountryCode } = require("../config/loadCountryConfig");
 
 const validateFirstName = body("firstName")
