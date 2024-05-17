@@ -3,6 +3,7 @@ const {
   countryValidator,
   phoneNumberValidator,
 } = require("../util/commonUtil");
+
 const { getCountryCode } = require("../config/loadCountryConfig");
 
 const validateFirstName = body("firstName")
