@@ -3,5 +3,5 @@ exports.getNotFound = (req, res, next) => {
 };
 
 exports.getServerError = (err, req, res, next) => {
-  res.status(500).send("Something went wrong" + err);
+  res.status(500).send(err);
 };
