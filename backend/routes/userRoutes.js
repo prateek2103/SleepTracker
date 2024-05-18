@@ -24,7 +24,7 @@ router.post(
   userController.postResetPassword
 );
 
-// get /user/resetPassword
+// POST /user/sendResetMail
 router.post(
   "/sendResetMail",
   resetGetValidations,

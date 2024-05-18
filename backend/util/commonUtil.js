@@ -3,6 +3,8 @@ const { getCountryCode } = require("../config/loadCountryConfig");
 const { parsePhoneNumberFromString } = require("libphonenumber-js");
 const { generateToken } = require("./jwtUtil");
 const SibApiV3Sdk = require("@getbrevo/brevo");
+const SleepTrackerError = require("../errorHandling/SleepTrackerError");
+const { StatusCodes } = require("http-status-codes");
 let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 let apiKey = apiInstance.authentications["apiKey"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
@@ -35,9 +37,15 @@ exports.phoneNumberValidator = (phoneNumber, countryCode) => {
   }
 };
 
+/**
+ * method to send mail to users using Brevo sdk
+ * @param {} emailOptions
+ * @returns
+ */
 const sendMail = (emailOptions) => {
   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
+  // basic information
   sendSmtpEmail.subject = emailOptions.subject;
   sendSmtpEmail.htmlContent = emailOptions.message;
   sendSmtpEmail.sender = {
@@ -51,42 +59,71 @@ const sendMail = (emailOptions) => {
       console.log(console.log("email sent successfully"));
     },
     function (error) {
-      console.error(error);
+      throw new SleepTrackerError(
+        "error sending mail to user",
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
     }
   );
 };
 
+/**
+ * method to send reset email to user
+ * @param {*} userData
+ * @returns
+ */
 exports.sendResetMail = (userData) => {
   const emailOptions = {
     subject: "Reset password link for your email",
-    message:
-      "<p> Forgot your password? Don't worry we got you covered. Click on this link:" +
-      generateResetLink(userData),
+    message: generateResetLink(userData),
     receiver: userData.email,
   };
 
   return sendMail(emailOptions);
 };
 
+/**
+ * util to send verify email to signed up user
+ * @param {*} userData
+ * @returns
+ */
 exports.sendVerifyMail = (userData) => {
   const emailOptions = {
     subject: "Verify your email",
-    message:
-      "<p> Please verify your email id using this link:" +
-      generateVerifyLink(userData),
+    message: generateVerifyLink(userData),
     receiver: userData.email,
   };
 
   return sendMail(emailOptions);
 };
 
+/**
+ * helper method to generate verify email link for the user
+ * @param {} userData
+ * @returns
+ */
 const generateVerifyLink = (userData) => {
   const token = generateToken({
-    userId: userData._id,
+    userId: userData._id.toString(),
   });
-  return "http://localhost:3000/verifyAccount/" + token;
+  return (
+    "<p> Please verify your email id using this link:" +
+    "http://localhost:3000/verifyAccount/" +
+    token +
+    "</p>"
+  );
 };
 
+/**
+ * helper method to generate reset link
+ * @param {*} userData
+ * @returns
+ */
 const generateResetLink = (userData) => {
-  return "http://localhost:3000/resetPassword/" + userData.resetToken;
+  return (
+    "<p> Forgot your password? Don't worry we got you covered. Click on this link:" +
+    "http://localhost:3000/resetPassword/" +
+    userData.resetToken +
+    " </p>"
+  );
 };
