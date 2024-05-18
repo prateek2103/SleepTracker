@@ -41,7 +41,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-
+  resetToken: {
+    type: String,
+  },
 });
 
 // encrypt user password before saving

@@ -1,8 +1,7 @@
-const { response } = require("express");
 const UserModel = require("../models/UserModel");
 const { validationResult } = require("express-validator");
 const jwtUtil = require("../util/jwtUtil");
-const { sendMail } = require("../util/commonUtil");
+const { sendVerifyMail, sendResetMail } = require("../util/commonUtil");
 /**
  * method to store user information on signup
  * @param {*} req
@@ -33,7 +32,7 @@ exports.postSignup = (req, res, next) => {
   userData
     .save()
     .then(() => {
-      return sendMail(userData);
+      return sendVerifyMail(userData);
     })
     .then(() => {
       return res.status(201).send("user added successfully");
@@ -114,5 +113,57 @@ exports.getVerifyEmail = (req, res, next) => {
     .catch((err) => {
       console.log(err);
       return res.status(400).send("invalid verify email link");
+    });
+};
+
+exports.postSendResetMail = (req, res, next) => {
+  const email = req.body.email;
+  let foundUser;
+
+  UserModel.findOne({ email: email })
+    .then((user) => {
+      if (!user) {
+        throw Error("no user found with this email");
+      }
+
+      user.resetToken = jwtUtil.generateToken({ userId: user._id });
+      foundUser = user;
+      return user.save();
+    })
+    .then(() => {
+      return sendResetMail(foundUser);
+    })
+    .then(() => {
+      res.status(200).send("reset mail sent successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).send(err);
+    });
+};
+
+exports.postResetPassword = (req, res, next) => {
+  // decode reset token
+  const resetToken = req.body.resetToken;
+
+  const { userId } = jwtUtil.verifyToken(resetToken);
+
+  UserModel.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw Error("invalid reset password link");
+      }
+
+      if (user.resetToken !== resetToken) {
+        throw Error("invalid reset password link");
+      }
+
+      user.password = req.body.password;
+      user.resetToken = null;
+
+      return user.save();
+    })
+    .then(() => {
+      res.status(200).send("user password resetted successfully");
     });
 };
