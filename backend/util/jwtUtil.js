@@ -18,11 +18,12 @@ exports.generateToken = (payload) => {
  * @returns
  */
 exports.verifyToken = (token) => {
-  return jwt.verify(token, JWT_SECRET, (err, decodedData) => {
-    if (err) {
-      throw new SleepTrackerError("invalid user token", StatusCodes.FORBIDDEN);
-    }
+  return jwt.verify(token, JWT_SECRET);
+  // , (err, decodedData) => {
+  //   if (err) {
+  //     throw new SleepTrackerError("invalid user token", StatusCodes.FORBIDDEN);
+  //   }
 
-    return decodedData;
-  });
+  //   return decodedData;
+  // });
 };

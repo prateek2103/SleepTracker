@@ -7,10 +7,13 @@ const userRoutes = require("./routes/userRoutes");
 const errorController = require("./controllers/errorController");
 const bodyParser = require("body-parser");
 const { loadCountries } = require("./config/loadCountryConfig");
+const sleepRecordRoutes = require("./routes/sleepRecordRoutes");
+
 app.use(bodyParser.json());
 
 // routes
 app.use("/user", userRoutes);
+app.use("/index", sleepRecordRoutes);
 
 // middleware to handle not found routes
 app.use("*", errorController.getNotFound);

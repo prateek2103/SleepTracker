@@ -23,6 +23,8 @@
     "libphonenumber-js": "^1.11.1",
     "lodash": "^4.17.21",
     "mobitel-iso-3166-countries": "^1.1.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "mongoose": "^8.3.3",
     "nodemailer": "^6.9.13",
     "nodemailer-sendinblue-transport": "^2.0.1",

@@ -8,6 +8,9 @@ const { StatusCodes } = require("http-status-codes");
 let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 let apiKey = apiInstance.authentications["apiKey"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
+const moment = require("moment");
+const TIME_FORMAT_12 = "HH:mm A";
+const TIME_FORMAT_24 = "HH:mm";
 
 const SENDER_EMAIL = process.env.SENDER_EMAIL;
 const SENDER_NAME = process.env.SENDER_NAME;
@@ -37,6 +40,14 @@ exports.phoneNumberValidator = (phoneNumber, countryCode) => {
   }
 };
 
+exports.sleepTimeValidator = (sleepTime) => {
+  try {
+    let date = moment(sleepTime, "YYYY-MM-DDTHH:mm:ss", true);
+    return date.isValid();
+  } catch (err) {
+    return false;
+  }
+};
 /**
  * method to send mail to users using Brevo sdk
  * @param {} emailOptions
