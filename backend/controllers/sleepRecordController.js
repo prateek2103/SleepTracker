@@ -1,7 +1,5 @@
-const { validationResult } = require("express-validator");
 const moment = require("moment-timezone");
 const SleepRecordModel = require("../models/SleepRecordModel");
-const { escape } = require("lodash");
 const SleepTrackerError = require("../errorHandling/SleepTrackerError");
 const { StatusCodes } = require("http-status-codes");
 const TIMEZONE = "Asia/Kolkata";
