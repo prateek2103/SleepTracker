@@ -1,5 +1,4 @@
 const UserModel = require("../models/UserModel");
-const { validationResult } = require("express-validator");
 const jwtUtil = require("../util/jwtUtil");
 const { sendVerifyMail, sendResetMail } = require("../util/commonUtil");
 const SleepTrackerError = require("../errorHandling/SleepTrackerError");
@@ -13,15 +12,6 @@ const { StatusCodes } = require("http-status-codes");
  * @param {*} next
  */
 exports.postSignup = (req, res, next) => {
-  const validationErrors = validationResult(req);
-
-  if (!validationErrors.isEmpty()) {
-    const errMsgs = err.errors.map((r) => r.msg);
-    return next(
-      new SleepTrackerError(JSON.stringify(errMsgs), StatusCodes.BAD_REQUEST)
-    );
-  }
-
   userData = new UserModel({
     firstName: req.body.firstName,
     age: req.body.age,

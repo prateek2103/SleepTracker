@@ -40,6 +40,11 @@ exports.phoneNumberValidator = (phoneNumber, countryCode) => {
   }
 };
 
+/**
+ * validate the time for a specific format
+ * @param {*} sleepTime
+ * @returns
+ */
 exports.sleepTimeValidator = (sleepTime) => {
   try {
     let date = moment(sleepTime, "YYYY-MM-DDTHH:mm:ss", true);

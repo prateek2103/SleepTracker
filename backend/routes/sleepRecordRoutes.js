@@ -1,32 +1,39 @@
+/**
+ * routes for sleep related data entries
+ */
 const router = require("express").Router();
 const sleepRecordController = require("../controllers/sleepRecordController");
-const { validateToken } = require("../auth/validateToken");
+const { validateToken } = require("../middleware/validateToken");
 const {
   sleepEntryValidations,
   sleepEntryDeleteValidations,
 } = require("../validations/sleepRecordValidations");
+const { handleValidationErrors } = require("../middleware/validationHandler");
 
-// POST /sleepEntry
+// POST /index/sleepEntry
 router.post(
   "/sleepEntry",
   validateToken,
   sleepEntryValidations,
+  handleValidationErrors,
   sleepRecordController.postSleepRecord
 );
 
-// DELETE /sleepEntry/id
+// DELETE /index/sleepEntry/id
 router.delete(
   "/sleepEntry/:id",
   validateToken,
   sleepEntryDeleteValidations,
+  handleValidationErrors,
   sleepRecordController.deleteSleepRecord
 );
 
-// PUT /sleepEntry/id
+// PUT /index/sleepEntry/id
 router.put(
   "/sleepEntry/:id",
   validateToken,
   sleepEntryValidations,
+  handleValidationErrors,
   sleepRecordController.updateSleepRecord
 );
 

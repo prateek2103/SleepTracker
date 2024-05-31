@@ -10,21 +10,36 @@ const {
   resetGetValidations,
   resetPostValidations,
 } = require("../validations/userValidations");
+const { handleValidationErrors } = require("../middleware/validationHandler");
 
 /**
  * POST /user/signup
  */
-router.post("/signup", signupValidations, userController.postSignup);
+router.post(
+  "/signup",
+  signupValidations,
+  handleValidationErrors,
+  userController.postSignup
+);
 
 /**
  * POST /user/login
  */
-router.post("/login", loginValidations, userController.postLogin);
+router.post(
+  "/login",
+  loginValidations,
+  handleValidationErrors,
+  userController.postLogin
+);
 
 /**
  * GET /user/verifyAccount/verifyId
  */
-router.get("/verifyAccount/:verifyToken", userController.getVerifyEmail);
+router.get(
+  "/verifyAccount/:verifyToken",
+  handleValidationErrors,
+  userController.getVerifyEmail
+);
 module.exports = router;
 
 /**
@@ -33,6 +48,7 @@ module.exports = router;
 router.post(
   "/resetPassword",
   resetPostValidations,
+  handleValidationErrors,
   userController.postResetPassword
 );
 
@@ -42,5 +58,6 @@ router.post(
 router.post(
   "/sendResetMail",
   resetGetValidations,
+  handleValidationErrors,
   userController.postSendResetMail
 );

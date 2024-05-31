@@ -6,19 +6,18 @@ const SleepTrackerError = require("../errorHandling/SleepTrackerError");
 const { StatusCodes } = require("http-status-codes");
 const TIMEZONE = "Asia/Kolkata";
 
+/**
+ * store a sleep entry for the user
+ * a sleep entry should not overlap with another one
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 exports.postSleepRecord = (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    return next(new Error());
-  }
-
+  // conver to utc before comparison
   const sleepTime = moment.tz(req.body.sleepTime, TIMEZONE).utc();
   const wakeTime = moment.tz(req.body.wakeUpTime, TIMEZONE).utc();
-
-  console.log(sleepTime.format());
-  console.log(wakeTime.format());
 
   checkSleepEntryOverlap(sleepTime, wakeTime, req.userId)
     .then((isOverlapping) => {
@@ -47,6 +46,12 @@ exports.postSleepRecord = (req, res, next) => {
     });
 };
 
+/**
+ * method to delete a sleep entry based on id
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.deleteSleepRecord = (req, res, next) => {
   const sleepRecordId = req.params.id;
   SleepRecordModel.deleteOne({
@@ -67,6 +72,13 @@ exports.deleteSleepRecord = (req, res, next) => {
     });
 };
 
+/**
+ * method to update sleep data for a record
+ * by id
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.updateSleepRecord = (req, res, next) => {
   const sleepTime = moment.tz(req.body.sleepTime, TIMEZONE).utc();
   const wakeTime = moment.tz(req.body.wakeUpTime, TIMEZONE).utc();
@@ -79,6 +91,13 @@ exports.updateSleepRecord = (req, res, next) => {
         throw new SleepTrackerError(
           "no sleep entry found to update",
           StatusCodes.NOT_FOUND
+        );
+      }
+
+      if (sleepEntry.userId != req.userId) {
+        throw new SleepTrackerError(
+          "sleep entry does not belong to the user",
+          StatusCodes.FORBIDDEN
         );
       }
 
@@ -111,8 +130,15 @@ exports.updateSleepRecord = (req, res, next) => {
     });
 };
 
+/**
+ * helper method to check if sleep time and waketime for an entry is overlapping with another
+ * @param {*} sleepTime
+ * @param {*} wakeTime
+ * @param {*} userId
+ * @param {*} sleepId
+ * @returns
+ */
 const checkSleepEntryOverlap = (sleepTime, wakeTime, userId, sleepId) => {
-  // get all sleep records for that user
   const query = {
     bedTime: {
       $lt: wakeTime,
@@ -123,6 +149,7 @@ const checkSleepEntryOverlap = (sleepTime, wakeTime, userId, sleepId) => {
     userId: userId,
   };
 
+  // don't include the sleep id to be updated in comparison
   if (sleepId) {
     query["_id"] = { $ne: sleepId };
   }
