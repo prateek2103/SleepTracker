@@ -1,3 +1,6 @@
+/**
+ * JWT utility class
+ */
 const jwt = require("jsonwebtoken");
 const SleepTrackerError = require("../errorHandling/SleepTrackerError");
 const { StatusCodes } = require("http-status-codes");
@@ -8,8 +11,21 @@ const JWT_SECRET = process.env.JWT_SECRET;
  * @param {} payload
  * @returns
  */
-exports.generateToken = (payload) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+exports.generateToken = async (payload) => {
+  return new Promise((resolve, reject) => {
+    jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
+      if (err) {
+        reject(
+          new SleepTrackerError(
+            "Error while generating JWT token",
+            StatusCodes.INTERNAL_SERVER_ERROR
+          )
+        );
+      }
+
+      resolve(token);
+    });
+  });
 };
 
 /**
@@ -18,12 +34,18 @@ exports.generateToken = (payload) => {
  * @returns
  */
 exports.verifyToken = (token) => {
-  return jwt.verify(token, JWT_SECRET);
-  // , (err, decodedData) => {
-  //   if (err) {
-  //     throw new SleepTrackerError("invalid user token", StatusCodes.FORBIDDEN);
-  //   }
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, JWT_SECRET, (err, decodedData) => {
+      if (err) {
+        reject(
+          new SleepTrackerError(
+            "Authentication failed. Invalid user token",
+            StatusCodes.FORBIDDEN
+          )
+        );
+      }
 
-  //   return decodedData;
-  // });
+      resolve(decodedData);
+    });
+  });
 };

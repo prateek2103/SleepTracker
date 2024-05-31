@@ -1,3 +1,6 @@
+/**
+ * country name to code conversion
+ */
 const iso3166 = require("mobitel-iso-3166-countries");
 
 const COUNTRIES = {};
