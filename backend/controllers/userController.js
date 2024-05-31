@@ -7,22 +7,21 @@ const { StatusCodes } = require("http-status-codes");
 
 /**
  * method to store user information on signup
+ * sent verification email to verify the account
  * @param {*} req
  * @param {*} res
  * @param {*} next
  */
 exports.postSignup = (req, res, next) => {
-  const err = validationResult(req);
+  const validationErrors = validationResult(req);
 
-  // get validation errors if present
-  if (!err.isEmpty()) {
+  if (!validationErrors.isEmpty()) {
     const errMsgs = err.errors.map((r) => r.msg);
     return next(
       new SleepTrackerError(JSON.stringify(errMsgs), StatusCodes.BAD_REQUEST)
     );
   }
 
-  // create user model before saving
   userData = new UserModel({
     firstName: req.body.firstName,
     age: req.body.age,
@@ -34,13 +33,13 @@ exports.postSignup = (req, res, next) => {
     verified: false,
   });
 
-  // save user and send verify mail
   userData
     .save()
     .then(() => {
       return sendVerifyMail(userData);
     })
     .then(() => {
+      console.log("verification email sent out successfully");
       return res.status(201).send("user added successfully");
     })
     .catch((err) => {
@@ -52,17 +51,22 @@ exports.postSignup = (req, res, next) => {
 
         return next(new SleepTrackerError(errMsg, StatusCodes.BAD_REQUEST));
       }
-      return next(
-        new SleepTrackerError(
-          "error while signing up user. Please try again later",
-          StatusCodes.INTERNAL_SERVER_ERROR
-        )
-      );
+
+      return err instanceof SleepTrackerError
+        ? next(err)
+        : next(
+            new SleepTrackerError(
+              "error while signing up user. Please try again later",
+              StatusCodes.INTERNAL_SERVER_ERROR
+            )
+          );
     });
 };
 
 /**
- * method to validate user and generate auth token on successful verification
+ * method to validate user
+ * generate auth token on successful verification
+ * login only verified users
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -70,7 +74,6 @@ exports.postSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   let foundUser;
 
-  // check if user exists
   UserModel.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
@@ -82,12 +85,10 @@ exports.postLogin = (req, res, next) => {
 
       foundUser = user;
 
-      // validate user passsword
       return user.comparePassword(req.body.password);
     })
     .then((isMatched) => {
       if (isMatched) {
-        // check if user has been verified or not
         if (!foundUser.verified) {
           throw new SleepTrackerError(
             "A mail has been sent to your respective email id. Please verify",
@@ -95,17 +96,16 @@ exports.postLogin = (req, res, next) => {
           );
         }
 
-        // generate auth token
         return jwtUtil.generateToken({
           userId: foundUser._id.toString(),
           name: foundUser.firstName,
         });
-      } else {
-        throw new SleepTrackerError(
-          "Username or password is incorrect",
-          StatusCodes.FORBIDDEN
-        );
       }
+
+      throw new SleepTrackerError(
+        "Username or password is incorrect",
+        StatusCodes.FORBIDDEN
+      );
     })
     .then((token) => {
       res.status(200).json({ authToken: token });
@@ -116,14 +116,14 @@ exports.postLogin = (req, res, next) => {
 };
 
 /**
- * method to verify user account using link send via email
+ * method to verify user account using verification email link
  * @param {*} req
  * @param {*} res
  * @param {*} next
  * @returns
  */
 exports.getVerifyEmail = (req, res, next) => {
-  const verifyToken = req.params.verifyId;
+  const verifyToken = req.params.verifyToken;
 
   if (!verifyToken) {
     return next(
@@ -134,16 +134,14 @@ exports.getVerifyEmail = (req, res, next) => {
     );
   }
 
-  // extract details from the verifyToken
-  let userId;
-  try {
-    userId = jwtUtil.verifyToken(verifyToken).userId;
-  } catch (err) {
-    return next(err);
-  }
-
-  // check if user exists
-  UserModel.findById(userId)
+  jwtUtil
+    .verifyToken(verifyToken)
+    .then((decodedData) => {
+      return decodedData.userId;
+    })
+    .then((userId) => {
+      return UserModel.findById(userId);
+    })
     .then((user) => {
       if (!user) {
         throw new SleepTrackerError(
@@ -172,6 +170,7 @@ exports.getVerifyEmail = (req, res, next) => {
 
 /**
  * method to send reset password link to user
+ * generate a jwt token (reset token) for the user which will be stored in db as well
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -189,9 +188,10 @@ exports.postSendResetMail = (req, res, next) => {
         );
       }
 
-      // generate reset token for the user
-      user.resetToken = jwtUtil.generateToken({ userId: user._id });
-
+      return jwtUtil.generateToken({ userId: user._id });
+    })
+    .then((token) => {
+      user.resetToken = token;
       foundUser = user;
       return user.save();
     })
@@ -215,29 +215,26 @@ exports.postSendResetMail = (req, res, next) => {
 exports.postResetPassword = (req, res, next) => {
   const resetToken = req.body.resetToken;
 
-  // decode reset token
   const { userId } = jwtUtil.verifyToken(resetToken);
 
   UserModel.findById(userId)
     .then((user) => {
       if (!user) {
         throw new SleepTrackerError(
-          "invalid reset password link",
+          "Invalid reset password link",
           StatusCodes.BAD_REQUEST
         );
       }
 
       if (user.resetToken !== resetToken) {
         throw new SleepTrackerError(
-          "invalid reset password link",
+          "Invalid reset password link",
           StatusCodes.FORBIDDEN
         );
       }
 
-      // update password and set reset token to null
       user.password = req.body.password;
       user.resetToken = null;
-
       return user.save();
     })
     .then(() => {

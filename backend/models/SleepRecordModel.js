@@ -24,5 +24,4 @@ const SleepRecordSchema = Schema({
   },
 });
 
-const SleepRecordModel = mongoose.model("Sleep", SleepRecordSchema);
-module.exports = SleepRecordModel;
+module.exports = mongoose.model("Sleep", SleepRecordSchema);

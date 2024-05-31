@@ -35,7 +35,7 @@ exports.phoneNumberValidator = (phoneNumber, countryCode) => {
   try {
     const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, countryCode);
     return phoneNumberObj && phoneNumberObj.isValid();
-  } catch (error) {
+  } catch (err) {
     return false;
   }
 };
@@ -65,17 +65,17 @@ const sendMail = (emailOptions) => {
   };
   sendSmtpEmail.to = [{ email: emailOptions.receiver }];
 
-  return apiInstance.sendTransacEmail(sendSmtpEmail).then(
-    function (data) {
-      console.log(console.log("email sent successfully"));
-    },
-    function (error) {
+  return apiInstance
+    .sendTransacEmail(sendSmtpEmail)
+    .then(() => {
+      return "SUCCESS";
+    })
+    .catch((err) => {
       throw new SleepTrackerError(
         "error sending mail to user",
         StatusCodes.INTERNAL_SERVER_ERROR
       );
-    }
-  );
+    });
 };
 
 /**
@@ -94,18 +94,22 @@ exports.sendResetMail = (userData) => {
 };
 
 /**
- * util to send verify email to signed up user
+ * utility to send verification email to respective user
  * @param {*} userData
  * @returns
  */
-exports.sendVerifyMail = (userData) => {
-  const emailOptions = {
-    subject: "Verify your email",
-    message: generateVerifyLink(userData),
-    receiver: userData.email,
-  };
+exports.sendVerifyMail = async (userData) => {
+  try {
+    const emailOptions = {
+      subject: "Verify your email",
+      message: await generateVerifyLink(userData),
+      receiver: userData.email,
+    };
 
-  return sendMail(emailOptions);
+    return sendMail(emailOptions);
+  } catch (err) {
+    throw err;
+  }
 };
 
 /**
@@ -113,16 +117,20 @@ exports.sendVerifyMail = (userData) => {
  * @param {} userData
  * @returns
  */
-const generateVerifyLink = (userData) => {
-  const token = generateToken({
-    userId: userData._id.toString(),
-  });
-  return (
-    "<p> Please verify your email id using this link:" +
-    "http://localhost:3000/verifyAccount/" +
-    token +
-    "</p>"
-  );
+const generateVerifyLink = async (userData) => {
+  try {
+    const token = await generateToken({
+      userId: userData._id.toString(),
+    });
+    return (
+      "<p> Please verify your email id using this link:" +
+      "http://localhost:3000/user/verifyAccount/" +
+      token +
+      "</p>"
+    );
+  } catch (err) {
+    throw err;
+  }
 };
 
 /**
