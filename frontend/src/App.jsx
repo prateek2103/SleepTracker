@@ -1,23 +1,25 @@
 import "./App.css";
-import { Box, Container, Grid } from "@mui/material";
+
 import SleepTrackerAppBar from "./components/SleepTrackerAppBar";
-import { AverageSleepMetric } from "./components/AverageSleepMetric";
-import { AddSleepJournal } from "./components/AddSleepJournal";
+import { SleepDataContextProvider } from "./context/SleepDataContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { SleepHistory } from "./pages/SleepHistory";
+import { Metrics } from "./pages/Metrics";
 
 function App() {
   return (
     <>
-      <SleepTrackerAppBar />
-      <Container>
-        <Grid marginY={15} container>
-          <Grid item xs={12} sm={12} md={5} lg={5}>
-            <AverageSleepMetric />
-          </Grid>
-          <Grid item xs={12} sm={12} md={7} lg={7}>
-            <AddSleepJournal />
-          </Grid>
-        </Grid>
-      </Container>
+      <Router>
+        <SleepTrackerAppBar />
+        <SleepDataContextProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/history" element={<SleepHistory />} />
+            <Route path="/metrics" element={<Metrics />} />
+          </Routes>
+        </SleepDataContextProvider>
+      </Router>
     </>
   );
 }

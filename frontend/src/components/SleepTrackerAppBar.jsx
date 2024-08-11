@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import HotelIcon from "@mui/icons-material/Hotel";
+import { Link } from "react-router-dom";
 
 const pages = ["history", "Metrics"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -40,24 +41,25 @@ function SleepTrackerAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <HotelIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "roboto",
-              fontWeight: 700,
-              letterSpacing: ".2rem",
-              color: "inherit",
-              textDecoration: "none",
-              marginLeft: "10px",
-            }}
-          >
-            Sleep Tracker
-          </Typography>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "roboto",
+                fontWeight: 700,
+                letterSpacing: ".2rem",
+                color: "white",
+                textDecoration: "none",
+                marginLeft: "10px",
+              }}
+            >
+              Sleep Tracker
+            </Typography>
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -90,7 +92,11 @@ function SleepTrackerAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography textAlign="center">
+                    <Link to={"/" + page} style={{ textDecoration: "none" }}>
+                      {page}
+                    </Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -121,18 +127,20 @@ function SleepTrackerAppBar() {
             }}
           >
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: "white",
-                  display: "block",
-                  marginLeft: "2rem",
-                }}
-              >
-                {page}
-              </Button>
+              <Link to={"/" + page} style={{ textDecoration: "none" }}>
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+                    marginLeft: "2rem",
+                  }}
+                >
+                  {page}
+                </Button>
+              </Link>
             ))}
           </Box>
 
