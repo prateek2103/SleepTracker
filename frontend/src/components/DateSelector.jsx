@@ -56,28 +56,36 @@ const DateSelector = forwardRef(({ onSelect }, ref) => {
     <>
       {dateCalender && (
         <>
-          <Button
+          {/* <Button
             variant="outlined"
-            sx={{ textTransform: "none", marginTop: "0.2rem" }}
+            sx={{
+              textTransform: "none",
+            }}
+          > */}
+          <Typography
+            variant="h4"
+            component="span"
+            onClick={resetDateCalender}
+            sx={{
+              fontWeight: "bold",
+              display: "inline-block",
+              marginX: "0.5rem",
+              paddingY: "0.4rem",
+              paddingX: "1rem",
+              background:
+                "linear-gradient(rgb(36, 119, 170) 0%, rgb(100, 97, 224) 100%)",
+              borderRadius: "0.2rem",
+              color: "white",
+            }}
           >
-            <Typography
-              variant="h3"
-              component="span"
-              onClick={resetDateCalender}
-              sx={{
-                color: "#3C9EFF",
-                fontWeight: "bold",
-                display: "inline-block",
-              }}
-            >
-              on {dateCalender}
-            </Typography>
-          </Button>
+            on {dateCalender}
+          </Typography>
+          {/* </Button> */}
         </>
       )}
       {!dateCalender && (
         <>
-          <FormControl sx={{ width: "9rem" }}>
+          <FormControl sx={{ width: "9rem", marginX: "1rem" }}>
             <InputLabel id="dayLabel">Day</InputLabel>
             <Select
               id="dayLabel"

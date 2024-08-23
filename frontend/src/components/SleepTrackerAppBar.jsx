@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import HotelIcon from "@mui/icons-material/Hotel";
 import { Link } from "react-router-dom";
 
-const pages = ["history", "Metrics"];
+const pages = ["History", "Metrics"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function SleepTrackerAppBar() {
@@ -37,13 +37,19 @@ function SleepTrackerAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        background:
+          "linear-gradient(rgb(36, 119, 170) 0%, rgb(100, 97, 224) 100%)",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <HotelIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Link to="/" style={{ textDecoration: "none" }}>
             <Typography
-              variant="h6"
+              variant="h5"
               noWrap
               component="a"
               sx={{
@@ -51,8 +57,7 @@ function SleepTrackerAppBar() {
                 display: { xs: "none", md: "flex" },
                 fontFamily: "roboto",
                 fontWeight: 700,
-                letterSpacing: ".2rem",
-                color: "white",
+                letterSpacing: ".1rem",
                 textDecoration: "none",
                 marginLeft: "10px",
               }}
@@ -68,7 +73,6 @@ function SleepTrackerAppBar() {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
             >
               <MenuIcon />
             </IconButton>
@@ -113,8 +117,7 @@ function SleepTrackerAppBar() {
               flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
+              // letterSpacing: ".3rem",
               textDecoration: "none",
             }}
           >
@@ -133,7 +136,6 @@ function SleepTrackerAppBar() {
                   onClick={handleCloseNavMenu}
                   sx={{
                     my: 2,
-                    color: "white",
                     display: "block",
                     marginLeft: "2rem",
                   }}
@@ -147,7 +149,11 @@ function SleepTrackerAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src="/static/images/avatar/2.jpg"
+                  sx={{ color: "rgb(100, 97, 224)", background: "#FFFFFF" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
