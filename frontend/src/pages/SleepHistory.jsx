@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Container,
   FormControl,
   Grid,
@@ -9,309 +10,137 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import { CustomAccordion } from "../ui/CustomAccordion";
+import CustomDatePicker from "../ui/CustomDatePicker";
 
+function SummaryComponent({ title }) {
+  return (
+    <>
+      <Typography
+        variant="h5"
+        component="h3"
+        sx={{ color: "rgb(100, 97, 224)", display: "inline-block" }}
+      >
+        {title}th Aug 2024
+      </Typography>
+      <Typography
+        variant="body2"
+        component="span"
+        sx={{
+          color: "black",
+          fontSize: "0.8rem",
+          marginY: "auto",
+          marginLeft: "1rem",
+        }}
+      >
+        Monday
+      </Typography>
+
+      <Typography
+        variant="body2"
+        component="span"
+        sx={{
+          color: "white",
+          background: "green",
+          fontSize: "0.8rem",
+          marginY: "auto",
+          marginLeft: "1rem",
+        }}
+      >
+        5 hours
+      </Typography>
+    </>
+  );
+}
 export function SleepHistory() {
   return (
     <Container sx={{ width: "80%", marginTop: "2rem" }}>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Grid spacing={2} sx={{ marginTop: "1rem" }} container>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            lg={1}
-            sm={12}
-            sx={{ marginRight: "0.5rem", display: "flex" }}
-          >
-            <Box display="flex" alignItems="center" height="100%">
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)" }}
-              >
-                Week
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={12} lg={1} sm={12}>
-            <Paper
-              sx={{
-                background:
-                  "linear-gradient(rgb(36, 119, 170) 0%, rgb(100, 97, 224) 100%)",
-                // padding: "1rem",
-                borderRadius: "50%",
-                width: 100,
-                height: 100,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              elevation={3}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "white", textAlign: "center" }}
-              >
-                1
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={12} lg={1} sm={12}>
-            <Paper
-              sx={{
-                background: "white",
-                // padding: "1rem",
-                borderRadius: "50%",
-                width: 100,
-                height: 100,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              elevation={3}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)", textAlign: "center" }}
-              >
-                2
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={12} lg={1} sm={12}>
-            <Paper
-              sx={{
-                background: "white",
-                // padding: "1rem",
-                borderRadius: "50%",
-                width: 100,
-                height: 100,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              elevation={3}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)", textAlign: "center" }}
-              >
-                3
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            lg={1}
-            sm={12}
-            sx={{ marginRight: "1rem" }}
-          >
-            <Paper
-              sx={{
-                background: "white",
-                // padding: "1rem",
-                borderRadius: "50%",
-                width: 100,
-                height: 100,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              elevation={3}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)", textAlign: "center" }}
-              >
-                4
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={12} lg={5} sm={12}>
-            <Box
-              sx={{
-                // padding: "1rem",
-                height: "100%",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)", textAlign: "center" }}
-              >
-                August
-              </Typography>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} md={12} lg={1} sm={12}>
-            <Box
-              sx={{
-                // padding: "1rem",
-                height: "100%",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ color: "rgb(100, 97, 224)", textAlign: "center" }}
-              >
-                2024
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+      <Box
+        sx={{ padding: "1rem", marginTop: "2rem" }}
+        display="flex"
+        alignItems="center"
+      >
+        <Typography
+          variant="body1"
+          component="h3"
+          sx={{ color: "black", fontWeight: "bold" }}
+        >
+          Date range
+        </Typography>
+        <Box sx={{ mx: "1rem" }}>
+          <CustomDatePicker label="Start Date" />
+        </Box>
+        <CustomDatePicker label="Last Date" />
+      </Box>
+      <Box sx={{ padding: "1rem" }} display="flex" alignItems="center">
+        <Typography
+          variant="body1"
+          component="h3"
+          sx={{ color: "black", fontWeight: "bold" }}
+        >
+          Sort by:
+        </Typography>
+        <Button sx={{ marginLeft: "1rem" }}>
+          <Typography variant="body1" component="h3" sx={{ color: "white" }}>
+            Newest First
+          </Typography>
+        </Button>
+        <Button sx={{ marginLeft: "1rem" }}>
+          <Typography variant="body1" component="h3" sx={{ color: "white" }}>
+            Oldest First
+          </Typography>
+        </Button>
+        <Box sx={{ mx: "1rem" }}></Box>
       </Box>
       <Box
         sx={{
-          background: "#F7F7F7",
-          padding: "2rem",
-          marginTop: "2rem",
+          padding: "1rem",
           borderRadius: "1rem",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
+        <h2>Last 7 Days</h2>
         <Box sx={{ height: "100%" }} alignItems="center">
-          <Typography
-            variant="h5"
-            component="h2"
-            sx={{ color: "rgb(100, 97, 224)", display: "inline-block" }}
-          >
-            Monday
-          </Typography>
-          <Paper
-            sx={{
-              backgroundColor: "#D0D0D0",
-              padding: "0.5rem",
-              display: "inline-block",
-              marginLeft: "0.5rem",
-            }}
-          >
-            <Typography
-              variant="body2"
-              component="span"
-              sx={{ color: "black", fontSize: "0.8rem" }}
-            >
-              19th Aug 2024
-            </Typography>
-          </Paper>
-          <Box sx={{ marginTop: "1rem" }} alignItems="center">
-            <Grid container spacing={2}>
-              <Grid item xs={3} md={3} lg={2} sm={3}>
-                <Paper
-                  sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
-                  elevation={2}
-                >
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    sx={{ color: "black" }}
-                  >
-                    9.00 - 10.00
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3} md={3} lg={2} sm={3}>
-                <Paper
-                  sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
-                  elevation={2}
-                >
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    sx={{ color: "black" }}
-                  >
-                    12.00 - 1.00 AM
-                  </Typography>
-                </Paper>
-              </Grid>
-            </Grid>
-          </Box>
+          {[1, 2, 3, 4, 5, 6].map((x) => (
+            <CustomAccordion summaryComp={<SummaryComponent title={x} />}>
+              <Box alignItems="center">
+                <Grid container spacing={2}>
+                  {["9.00 - 10.00", "11.00 - 12.00", "1.00 - 10.00 PM"].map(
+                    (time) => (
+                      <Grid item xs={3} md={3} lg={2} sm={3}>
+                        <Paper
+                          sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
+                          elevation={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            component="span"
+                            sx={{ color: "black" }}
+                          >
+                            {time}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                    )
+                  )}
+                </Grid>
+              </Box>
+            </CustomAccordion>
+          ))}
         </Box>
-        <Box sx={{ marginTop: "2rem" }} alignItems="center">
-          <Typography
-            variant="h5"
-            component="h2"
-            sx={{ color: "rgb(100, 97, 224)", display: "inline-block" }}
-          >
-            Tuesday
-          </Typography>
-          <Paper
-            sx={{
-              backgroundColor: "#D0D0D0",
-              padding: "0.5rem",
-              display: "inline-block",
-              marginLeft: "0.5rem",
-            }}
-            elevation={0}
-          >
-            <Typography
-              variant="body2"
-              component="span"
-              sx={{ color: "black", fontSize: "0.8rem" }}
-            >
-              20th Aug 2024
-            </Typography>
-          </Paper>
-          <Box sx={{ marginTop: "0.5rem" }} alignItems="center">
-            <Grid container spacing={2}>
-              <Grid item xs={3} md={3} lg={2} sm={3}>
-                <Paper
-                  sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
-                  elevation={2}
-                >
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    sx={{ color: "black" }}
-                  >
-                    9.00 - 10.00
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3} md={3} lg={2} sm={3}>
-                <Paper
-                  sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
-                  elevation={2}
-                >
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    sx={{ color: "black" }}
-                  >
-                    12.00 - 1.00 AM
-                  </Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3} md={3} lg={2} sm={3}>
-                <Paper
-                  sx={{ backgroundColor: "F7F7F7", padding: "1rem" }}
-                  elevation={2}
-                >
-                  <Typography
-                    variant="h6"
-                    component="span"
-                    sx={{ color: "black" }}
-                  >
-                    12.00 - 1.00 AM
-                  </Typography>
-                </Paper>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+        <Typography
+          variant="h6"
+          component="a"
+          align="center"
+          sx={{
+            textDecoration: "underline",
+            color: "black",
+            marginTop: "1rem",
+          }}
+        >
+          Load More
+        </Typography>
       </Box>
     </Container>
   );
