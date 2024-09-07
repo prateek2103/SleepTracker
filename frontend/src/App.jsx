@@ -15,13 +15,13 @@ function App() {
     <>
       <Router>
         <SleepTrackerAppBar />
-        <SleepDataContextProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/history" element={<SleepHistory />} />
-            <Route path="/metrics" element={<Metrics />} />
-          </Routes>
-        </SleepDataContextProvider>
+        {/* <SleepDataContextProvider> */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/history" element={<SleepHistory />} />
+          <Route path="/metrics" element={<Metrics />} />
+        </Routes>
+        {/* </SleepDataContextProvider> */}
         {/* <Footer /> */}
       </Router>
     </>
