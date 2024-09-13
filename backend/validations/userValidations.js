@@ -100,7 +100,7 @@ exports.signupValidations = [
  */
 exports.loginValidations = [
   validateEmail,
-  body("password").isEmpty().withMessage("password cannot be empty"),
+  body("password").notEmpty().withMessage("password cannot be empty"),
 ];
 
 /**
@@ -109,7 +109,7 @@ exports.loginValidations = [
 exports.resetPostValidations = [
   validatePassword,
   validateConfirmPassword,
-  body("resetToken").isEmpty().withMessage("reset token is empty"),
+  body("resetToken").notEmpty().withMessage("reset token is empty"),
 ];
 
 exports.resetGetValidations = [validateEmail];

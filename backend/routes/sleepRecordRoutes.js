@@ -37,4 +37,10 @@ router.put(
   sleepRecordController.updateSleepRecord
 );
 
+router.post(
+  "/sleepRecords",
+  validateToken,
+  sleepRecordController.getSleepRecords
+);
+
 module.exports = router;

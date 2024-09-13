@@ -76,6 +76,7 @@ const sendMail = (emailOptions) => {
       return "SUCCESS";
     })
     .catch((err) => {
+      console.log(err);
       throw new SleepTrackerError(
         "error sending mail to user",
         StatusCodes.INTERNAL_SERVER_ERROR

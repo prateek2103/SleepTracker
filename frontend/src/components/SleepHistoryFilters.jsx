@@ -1,7 +1,17 @@
 import { Box, Button, Typography } from "@mui/material";
-import CustomDatePicker from "../ui/CustomDatePicker";
+import { CustomDatePicker } from "../ui/CustomDatePicker";
+import { useRef } from "react";
 
-export default function SleepHistoryFilters() {
+export default function SleepHistoryFilters({ onSearch }) {
+  const startDateRef = useRef();
+  const endDateRef = useRef();
+
+  function handleSearch() {
+    const startDate = startDateRef.current.getDate();
+    const endDate = endDateRef.current.getDate();
+    onSearch(startDate, endDate);
+  }
+
   return (
     <>
       <Box
@@ -17,12 +27,19 @@ export default function SleepHistoryFilters() {
           Date range
         </Typography>
         <Box sx={{ marginLeft: "1rem" }}>
-          <CustomDatePicker label="Start Date" sx={{ mx: "1rem" }} />
+          <CustomDatePicker
+            label="Start Date"
+            sx={{ mx: "1rem" }}
+            ref={startDateRef}
+          />
         </Box>
         <Box sx={{ mx: "1rem" }}>
-          <CustomDatePicker label="Last Date" />
+          <CustomDatePicker label="Last Date" ref={endDateRef} />
         </Box>
-        <Button sx={{ width: "6rem", height: "3rem", marginTop: "5px" }}>
+        <Button
+          sx={{ width: "6rem", height: "3rem", marginTop: "5px" }}
+          onClick={handleSearch}
+        >
           Search
         </Button>
       </Box>

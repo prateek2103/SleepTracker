@@ -5,39 +5,8 @@ import { formatDate } from "../utils/commonUtil";
 import { WEEKDAYS } from "../utils/SleepConstants";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 
-export default function SleepHistoryJournal() {
-  const initialState = [
-    {
-      date: "19072024",
-      hoursSlept: "5",
-      weekDay: 1,
-      records: [
-        { sleepTime: "9:00 AM", wakeTime: "10:00 AM" },
-        { sleepTime: "11:00 PM", wakeTime: "10:00 AM" },
-      ],
-    },
-    {
-      date: "20072024",
-      hoursSlept: "7",
-      weekDay: 2,
-      records: [
-        { sleepTime: "7:00 AM", wakeTime: "10:00 AM" },
-        { sleepTime: "12:00 PM", wakeTime: "5:00 PM" },
-      ],
-    },
-    {
-      date: "21072024",
-      hoursSlept: "8",
-      weekDay: 3,
-      records: [
-        { sleepTime: "9:00 AM", wakeTime: "10:00 AM" },
-        { sleepTime: "11:00 AM", wakeTime: "12:00 PM" },
-        { sleepTime: "1:00 PM", wakeTime: "8:00 PM" },
-      ],
-    },
-  ];
-
-  const [sleepData, dispatch] = useReducer(sleepDataReducer, initialState);
+export default function SleepHistoryJournal({ data }) {
+  const [sleepData, dispatch] = useReducer(sleepDataReducer, data);
 
   return (
     <Box
@@ -70,8 +39,7 @@ export default function SleepHistoryJournal() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background:
-                      "linear-gradient(rgb(36, 119, 170) 0%, rgb(100, 97, 224) 100%)",
+                    background: "#6A8DF0",
                     color: "White",
                   }}
                 >

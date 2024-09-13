@@ -128,6 +128,48 @@ exports.updateSleepRecord = (req, res, next) => {
     });
 };
 
+exports.getSleepRecords = (req, res, next) => {
+  const startDate = moment
+    .tz(req.body.startDate, TIMEZONE)
+    .utc()
+    .startOf("day");
+  const endDate = moment.tz(req.body.endDate, TIMEZONE).utc().endOf("day");
+  const page = req.body.page == undefined ? 1 : req.body.page;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  console.log(startDate);
+  const query = {
+    bedTime: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+    userId: req.userId,
+  };
+
+  SleepRecordModel.find(query)
+    .skip(offset)
+    .limit(limit)
+    .select({ bedTime: 1, wakeUpTime: 1, day: 1 })
+    .then((data) => {
+      return res.status(200).send(
+        data.map((record) => {
+          const sleepTime = moment(record.bedTime)
+            .tz(TIMEZONE)
+            .format("HH:mm:ss");
+          const wakeTime = moment(record.wakeUpTime)
+            .tz(TIMEZONE)
+            .format("HH:mm:ss");
+          const day = moment(record.day).tz(TIMEZONE).format("YYYY-MM-DD");
+          return { _id: record["_id"], sleepTime, wakeTime, day };
+        })
+      );
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 /**
  * helper method to check if sleep time and waketime for an entry is overlapping with another
  * @param {*} sleepTime
